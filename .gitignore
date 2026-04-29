@@ -1,0 +1,15 @@
+# Plugin manager data
+lazy-lock.json
+
+# Swap/backup/undo
+*.swp
+*.swo
+*~
+*.un~
+.netrwhist
+
+# Cache
+.cache/
+
+# Claude Code
+.claude/

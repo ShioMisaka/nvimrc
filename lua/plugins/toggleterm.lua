@@ -1,6 +1,6 @@
 return {
   "akinsho/toggleterm.nvim",
-  version = "*",
+  version = "^2",
   cmd = { "ToggleTerm", "ToggleTermToggleAll", "TermExec" },
   keys = {
     { "<C-\\>", "<cmd>1 ToggleTerm<cr>", desc = "切换终端1 (水平)" },

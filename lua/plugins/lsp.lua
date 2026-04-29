@@ -60,17 +60,20 @@ return {
         vim.b[ev.buf].lsp_keymaps_set = true
 
         local opts = { noremap = true, silent = true, buffer = ev.buf }
-        vim.keymap.set("n", "gd", function() lsp_utils.filtered_lsp_jump("textDocument/definition") end, vim.tbl_extend("force", opts, { desc = "跳转到定义" }))
-        vim.keymap.set("n", "gD", function() lsp_utils.filtered_lsp_jump("textDocument/declaration") end, vim.tbl_extend("force", opts, { desc = "跳转到声明" }))
-        vim.keymap.set("n", "gi", function() lsp_utils.filtered_lsp_jump("textDocument/implementation") end, vim.tbl_extend("force", opts, { desc = "跳转到实现" }))
-        vim.keymap.set("n", "gy", function() lsp_utils.filtered_lsp_jump("textDocument/typeDefinition") end, vim.tbl_extend("force", opts, { desc = "跳转到类型定义" }))
-        vim.keymap.set("n", "gr", function() lsp_utils.filtered_lsp_jump("textDocument/references") end, vim.tbl_extend("force", opts, { desc = "查找引用" }))
-        vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "悬浮提示" }))
-        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "重命名" }))
-        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "代码动作" }))
-        vim.keymap.set("n", "<leader>de", vim.diagnostic.open_float, vim.tbl_extend("force", opts, { desc = "错误详情" }))
-        vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, vim.tbl_extend("force", opts, { desc = "上一个诊断" }))
-        vim.keymap.set("n", "]d", vim.diagnostic.goto_next, vim.tbl_extend("force", opts, { desc = "下一个诊断" }))
+        local bmap = function(key, fn, desc)
+          vim.keymap.set("n", key, fn, vim.tbl_extend("force", opts, { desc = desc }))
+        end
+        bmap("gd", function() lsp_utils.filtered_lsp_jump("textDocument/definition") end, "跳转到定义")
+        bmap("gD", function() lsp_utils.filtered_lsp_jump("textDocument/declaration") end, "跳转到声明")
+        bmap("gi", function() lsp_utils.filtered_lsp_jump("textDocument/implementation") end, "跳转到实现")
+        bmap("gy", function() lsp_utils.filtered_lsp_jump("textDocument/typeDefinition") end, "跳转到类型定义")
+        bmap("gr", function() lsp_utils.filtered_lsp_jump("textDocument/references") end, "查找引用")
+        bmap("K", vim.lsp.buf.hover, "悬浮提示")
+        bmap("<leader>rn", vim.lsp.buf.rename, "重命名")
+        bmap("<leader>ca", vim.lsp.buf.code_action, "代码动作")
+        bmap("<leader>de", vim.diagnostic.open_float, "错误详情")
+        bmap("[d", vim.diagnostic.goto_prev, "上一个诊断")
+        bmap("]d", vim.diagnostic.goto_next, "下一个诊断")
       end,
     })
   end,

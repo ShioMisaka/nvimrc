@@ -17,6 +17,10 @@ return {
           vim.notify("格式化保存仅适用于文件缓冲区", vim.log.levels.INFO)
           return
         end
+        if not vim.bo.modifiable or vim.bo.readonly then
+          vim.notify("文件不可写", vim.log.levels.WARN)
+          return
+        end
         require("conform").format({ async = false, lsp_fallback = true })
         vim.cmd("w")
       end,

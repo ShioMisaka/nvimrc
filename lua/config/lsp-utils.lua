@@ -81,7 +81,7 @@ function M.filtered_lsp_jump(method)
         if source then
           table.insert(filtered, {
             uri = vim.uri_from_fname(source),
-            range = loc.range,
+            range = loc.targetRange or loc.range,
           })
         end
       end

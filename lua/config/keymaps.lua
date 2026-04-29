@@ -78,7 +78,7 @@ map("n", "<C-l>", "<C-w>l", { desc = "切换到右侧窗口", silent = true })
 
 -- 窗口拆分
 map("n", "<leader>v", "<C-w>v", { desc = "垂直拆分窗口", silent = true })
-map("n", "<leader>s", "<C-w>s", { desc = "水平拆分窗口", silent = true })
+map("n", "<leader>-", "<C-w>s", { desc = "水平拆分窗口", silent = true })
 map("n", "<leader>x", "<C-w>c", { desc = "关闭当前窗口", silent = true })
 
 -- 清除搜索高亮 (按 Esc 时)

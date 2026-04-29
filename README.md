@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/nvim-config.git ~/.config/nvim
+git clone https://github.com/ShioMisaka/nvimrc.git
 ```
 
 首次启动 Neovim 时，[lazy.nvim](https://github.com/folke/lazy.nvim) 会自动安装并拉取所有插件依赖。

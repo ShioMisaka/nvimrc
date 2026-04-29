@@ -78,7 +78,8 @@ return {
 
     -- Git
     local function in_git_repo()
-      return vim.uv.fs_stat(".git") ~= nil
+      local result = vim.fn.system({ "git", "rev-parse", "--is-inside-work-tree" })
+      return vim.v.shell_error == 0
     end
 
     local function git_files()

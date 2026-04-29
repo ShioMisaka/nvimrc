@@ -78,26 +78,19 @@ return {
 
     -- Git
     local function in_git_repo()
-      local result = vim.fn.system({ "git", "rev-parse", "--is-inside-work-tree" })
+      vim.fn.system({ "git", "rev-parse", "--is-inside-work-tree" })
       return vim.v.shell_error == 0
     end
 
-    local function git_files()
-      if in_git_repo() then builtin.git_files() else vim.notify("不在 Git 仓库中", vim.log.levels.WARN) end
-    end
-    local function git_commits()
-      if in_git_repo() then builtin.git_commits() else vim.notify("不在 Git 仓库中", vim.log.levels.WARN) end
-    end
-    local function git_branches()
-      if in_git_repo() then builtin.git_branches() else vim.notify("不在 Git 仓库中", vim.log.levels.WARN) end
-    end
-    local function git_status()
-      if in_git_repo() then builtin.git_status() else vim.notify("不在 Git 仓库中", vim.log.levels.WARN) end
+    local function git_picker(fn)
+      return function()
+        if in_git_repo() then fn() else vim.notify("不在 Git 仓库中", vim.log.levels.WARN) end
+      end
     end
 
-    vim.keymap.set("n", "<leader>gf", git_files, { desc = "Git 文件" })
-    vim.keymap.set("n", "<leader>gc", git_commits, { desc = "Git 提交记录" })
-    vim.keymap.set("n", "<leader>gb", git_branches, { desc = "Git 分支" })
-    vim.keymap.set("n", "<leader>gs", git_status, { desc = "Git 状态" })
+    vim.keymap.set("n", "<leader>gf", git_picker(builtin.git_files), { desc = "Git 文件" })
+    vim.keymap.set("n", "<leader>gc", git_picker(builtin.git_commits), { desc = "Git 提交记录" })
+    vim.keymap.set("n", "<leader>gb", git_picker(builtin.git_branches), { desc = "Git 分支" })
+    vim.keymap.set("n", "<leader>gs", git_picker(builtin.git_status), { desc = "Git 状态" })
   end,
 }

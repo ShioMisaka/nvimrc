@@ -64,7 +64,7 @@ return {
         vim.keymap.set("n", "gD", function() lsp_utils.filtered_lsp_jump("textDocument/declaration") end, vim.tbl_extend("force", opts, { desc = "跳转到声明" }))
         vim.keymap.set("n", "gi", function() lsp_utils.filtered_lsp_jump("textDocument/implementation") end, vim.tbl_extend("force", opts, { desc = "跳转到实现" }))
         vim.keymap.set("n", "gy", function() lsp_utils.filtered_lsp_jump("textDocument/typeDefinition") end, vim.tbl_extend("force", opts, { desc = "跳转到类型定义" }))
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("force", opts, { desc = "查找引用" }))
+        vim.keymap.set("n", "gr", function() lsp_utils.filtered_lsp_jump("textDocument/references") end, vim.tbl_extend("force", opts, { desc = "查找引用" }))
         vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "悬浮提示" }))
         vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "重命名" }))
         vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "代码动作" }))

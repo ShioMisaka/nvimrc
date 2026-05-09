@@ -13,7 +13,11 @@ return {
   {
     "tadmccorkle/markdown.nvim",
     ft = "markdown",
-    opts = {},
+    opts = {
+      mappings = {
+        link_add = false, -- 避免覆盖 gl（移动到行尾）
+      },
+    },
   },
   -- 表格编辑模式
   {

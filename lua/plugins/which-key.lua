@@ -10,6 +10,7 @@ return {
       { "<leader>r", group = "重构" },
       { "<leader>s", group = "会话" },
       { "<leader>v", group = "垂直拆分" },
+      { "<leader>m", group = "Markdown" },
       { "<leader>x", group = "窗口" },
     },
   },

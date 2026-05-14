@@ -96,15 +96,19 @@ Neovim 内置 `vim.diagnostic` 模块提供以下命令（`:help diagnostic-api`
 
 ### 启用 LSP 服务器
 
-通过 `servers` 列表声明需要启用的服务器，Mason 负责安装二进制文件：
+通用服务器通过 `servers` 列表批量启用，Mason 负责安装二进制文件。需要特殊配置的服务器单独声明：
 
 ```lua
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
-local servers = { "clangd", "lua_ls", "pyright", "neocmake" }
+-- 通用服务器（仅需 capabilities）
+local servers = { "lua_ls", "neocmake" }
 for _, server in ipairs(servers) do
   vim.lsp.config(server, { capabilities = capabilities })
   vim.lsp.enable(server)
 end
+-- 需要自定义参数的服务器单独启用
+vim.lsp.enable("pyright")
+vim.lsp.enable("ruff")
+vim.lsp.enable("clangd")
 ```
 
 ### clangd 自定义参数
@@ -117,12 +121,42 @@ vim.lsp.config("clangd", {
 })
 ```
 
+### Python LSP 分工（pyright + ruff）
+
+Python 使用双 LSP 方案：pyright 负责类型检查和补全，ruff 负责代码检查（linting）。
+
+pyright 禁用了 linting 和 organize imports（避免与 ruff 和 conform.nvim 冲突）：
+
+```lua
+vim.lsp.config("pyright", {
+  capabilities = capabilities,
+  settings = {
+    pyright = { disableOrganizeImports = true },
+    python = { analysis = { ignore = { "*" } } },
+  },
+})
+```
+
+ruff 禁用了 hover 和格式化能力（分别由 pyright 和 conform.nvim 处理）：
+
+```lua
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "ruff" then
+      client.server_capabilities.hoverProvider = false
+      client.server_capabilities.documentFormattingProvider = false
+    end
+  end,
+})
+```
+
 ### 添加新的 LSP 服务器
 
 将服务器名称加入 `servers` 列表即可：
 
 ```lua
-local servers = { "clangd", "lua_ls", "pyright", "neocmake", "rust_analyzer" }
+local servers = { "lua_ls", "neocmake", "rust_analyzer" }
 ```
 
 如需自定义参数，在循环之前使用 `vim.lsp.config()` 覆盖：
@@ -184,4 +218,5 @@ end, { desc = "Switch between source and header file" })
 - 多候选时弹出 `vim.ui.select` 列表供选择
 - 光标停留自动显示诊断浮窗
 - clangd 支持源文件/头文件一键切换（`<A-o>`）
+- Python 双 LSP：pyright（类型检查/补全）+ ruff（代码检查），职责分离
 - 通过 nvim-cmp 集成补全（`cmp-nvim-lsp` 提供补全能力）

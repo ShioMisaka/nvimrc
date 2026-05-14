@@ -5,6 +5,7 @@ return {
     lazy = false,    -- 确保在启动时立即加载
     priority = 1000, -- 确保在其他插件前加载
     config = function()
+      require("tokyonight").setup({})
       vim.cmd([[colorscheme tokyonight]])
     end,
   },

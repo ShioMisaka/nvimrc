@@ -8,7 +8,7 @@ return {
   config = function(_, opts)
     require("mason").setup(opts)
     require("mason-lspconfig").setup({
-      ensure_installed = { "clangd", "lua_ls", "pyright", "neocmake" },
+      ensure_installed = { "clangd", "lua_ls", "pyright", "neocmake", "ruff" },
     })
   end,
   opts = {

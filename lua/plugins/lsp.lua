@@ -14,12 +14,28 @@ return {
       cmd = { "clangd", "--background-index", "--clang-tidy", "--header-insertion=iwyu" },
     })
 
-    -- 启用的 LSP 服务器（内置 API 配置，Mason 管理二进制）
-    local servers = { "lua_ls", "pyright", "neocmake" }
+    -- pyright: 类型检查和补全（linting 由 Ruff 处理）
+    vim.lsp.config("pyright", {
+      capabilities = capabilities,
+      settings = {
+        pyright = { disableOrganizeImports = true },
+        python = { analysis = { ignore = { "*" } } },
+      },
+    })
+
+    -- ruff: 快速 Python linting
+    vim.lsp.config("ruff", {
+      capabilities = capabilities,
+    })
+
+    -- 通用 LSP 服务器（仅需 capabilities）
+    local servers = { "lua_ls", "neocmake" }
     for _, server in ipairs(servers) do
       vim.lsp.config(server, { capabilities = capabilities })
       vim.lsp.enable(server)
     end
+    vim.lsp.enable("pyright")
+    vim.lsp.enable("ruff")
     vim.lsp.enable("clangd")
 
     -- clangd: .h/.cpp 切换
@@ -39,6 +55,18 @@ return {
         end
       end)
     end, { desc = "Switch between source and header file" })
+
+    -- 禁用 Ruff 的 hover 和格式化（由 Pyright 和 conform.nvim 分别处理）
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("RuffCapabilities", { clear = true }),
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client.name == "ruff" then
+          client.server_capabilities.hoverProvider = false
+          client.server_capabilities.documentFormattingProvider = false
+        end
+      end,
+    })
 
     -- 光标停留自动显示诊断弹窗
     vim.api.nvim_create_autocmd("CursorHold", {

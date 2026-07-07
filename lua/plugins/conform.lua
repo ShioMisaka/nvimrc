@@ -35,6 +35,15 @@ return {
       cpp = { "clang-format" },
       cmake = { "cmake_format" },
     },
+
+    -- clang-format：项目有自己的 .clang-format 时尊重它，否则回退到 4 空格风格
+    -- 仅在向上找不到 .clang-format 时追加 --fallback-style，不覆盖团队/项目规范
+    formatters = {
+      ["clang-format"] = {
+        -- WebKit 预定义风格即 4 空格缩进，避免内联多 key fallback 在新版 clang-format 上的解析问题
+        prepend_args = { "--fallback-style=WebKit" },
+      },
+    },
   },
   init = function()
     -- gq 等操作使用 conform 代替内置 formatexpr

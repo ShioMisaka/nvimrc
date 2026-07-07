@@ -74,6 +74,56 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
 })
 
+-- 外部工具（AI coding、git、rm 等）改动/删除文件时的优雅处理
+-- - 文件被外部删除/移动：buffer 内容原样保留，柔和提示，不再报 E211
+-- - 文件被外部修改但仍在：buffer 未修改则自动重载，有未保存改动则只提示
+-- FileChangedShell 是 nvim 在检测到外部变化的任何时机统一触发的事件，
+-- 配合 autoread 即可覆盖 FocusGained / BufEnter / CursorHold 等所有场景。
+vim.o.autoread = true
+
+vim.api.nvim_create_autocmd("FileChangedShell", {
+  group = vim.api.nvim_create_augroup("external_file_change", { clear = true }),
+  callback = function(event)
+    local buf = event.buf
+    if not vim.api.nvim_buf_is_valid(buf) then return end
+
+    -- reason: 0=不明确 1=被修改 2=时间戳变 3=被删除 4=被移动
+    local path = vim.api.nvim_buf_get_name(buf)
+    local modified = vim.bo[buf].modified
+    local exists = path ~= "" and vim.loop.fs_stat(path) ~= nil
+
+    -- 文件已被删除或被移动：保留 buffer 内容，只给一条柔和提示
+    if not exists then
+      vim.schedule(function()
+        if vim.api.nvim_buf_is_valid(buf) then
+          vim.notify(
+            ("文件已被外部删除或移动: %s\nbuffer 内容已保留，保存时会重新创建"):format(path),
+            vim.log.levels.WARN,
+            { title = "文件变化" }
+          )
+        end
+      end)
+      return
+    end
+
+    -- 文件被外部修改且仍在：未修改则让 autoread 自动重载；已修改只提示，绝不覆盖
+    if event.reason == 1 or event.reason == 2 then
+      if modified then
+        vim.schedule(function()
+          if vim.api.nvim_buf_is_valid(buf) then
+            vim.notify(
+              ("文件被外部修改，但 buffer 也有未保存改动，未自动重载: %s"):format(path),
+              vim.log.levels.WARN,
+              { title = "文件变化" }
+            )
+          end
+        end)
+      end
+      -- modified == false 时交给 autoread 自动重载，无需提示
+    end
+  end,
+})
+
 -- 当没有系统剪贴板支持时（如 SSH 无 X11 forwarding），使用 OSC 52 复制到本地剪贴板
 if vim.fn.has("clipboard") == 0 then
   vim.api.nvim_create_autocmd("TextYankPost", {

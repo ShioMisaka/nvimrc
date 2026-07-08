@@ -31,7 +31,7 @@ lazy-lock.json            -- 插件版本锁，已锁定，禁用自动更新检
 - 所有插件文档放 `docs/<plugin>.md`，文件名小写 kebab-case。
 - 文档语言为中文，以表格为核心呈现形式（快捷键表、命令表）。
 - 快捷键必须从源码 `vim.keymap.set()` 和插件 spec 的 `keys = {}` 中**实际提取**，不可凭记忆。
-- 详细文档写作规范见 `.claude/skills/nvim-doc/SKILL.md`。
+- 详细文档写作规范见 `.agents/skills/nvim-doc/SKILL.md`。
 
 ## 编辑此配置时的注意事项
 

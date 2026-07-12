@@ -145,6 +145,13 @@ map("i", "kj", "<Esc>", { silent = true })
 map("t", "jk", "<C-\\><C-n>", { silent = true })
 map("t", "kj", "<C-\\><C-n>", { silent = true })
 
+-- 插入模式下用 Ctrl+hjkl 移动光标，避免手离开主键区够方向键
+-- 覆盖了 <C-h>(Backspace) 和 <C-k>(digraph)，退格用物理 <BS>，digraph 不再可用
+map("i", "<C-h>", "<Left>", { desc = "插入模式：左移一字符", silent = true })
+map("i", "<C-l>", "<Right>", { desc = "插入模式：右移一字符", silent = true })
+map("i", "<C-j>", "<Down>", { desc = "插入模式：下移一行", silent = true })
+map("i", "<C-k>", "<Up>", { desc = "插入模式：上移一行", silent = true })
+
 -- 退出 Neovim（存在未保存文件时弹出确认）
 map("n", "<leader>q", function()
   local has_modified = false

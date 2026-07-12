@@ -146,7 +146,8 @@ map("t", "jk", "<C-\\><C-n>", { silent = true })
 map("t", "kj", "<C-\\><C-n>", { silent = true })
 
 -- 插入模式下用 Ctrl+hjkl 移动光标，避免手离开主键区够方向键
--- 覆盖了 <C-h>(Backspace) 和 <C-k>(digraph)，退格用物理 <BS>，digraph 不再可用
+-- 覆盖了 <C-h>(Backspace)、<C-j>(插入<NL>)、<C-k>(digraph) 的默认行为，
+-- 退格用物理 <BS>，换行用 <CR>，digraph 不再可用
 map("i", "<C-h>", "<Left>", { desc = "插入模式：左移一字符", silent = true })
 map("i", "<C-l>", "<Right>", { desc = "插入模式：右移一字符", silent = true })
 map("i", "<C-j>", "<Down>", { desc = "插入模式：下移一行", silent = true })
